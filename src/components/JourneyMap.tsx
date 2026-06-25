@@ -1,7 +1,9 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import type { LucideIcon } from "lucide-react";
 import { BarChart3, BookOpen, Cross, Home, Landmark, Users } from "lucide-react";
+import { assets } from "@/data/assets";
 import { siteContent } from "@/data/siteContent";
 import type { ChoiceKind, ZoneId } from "@/data/zones";
 import { zones } from "@/data/zones";
@@ -51,7 +53,11 @@ export function JourneyMap({ choices, currentIndex, isFinal, onNavigate }: Journ
   ];
 
   return (
-    <nav aria-label={siteContent.map.ariaLabel} className="trail-map-card journey-map-card presentation-panel rounded-lg p-4">
+    <nav
+      aria-label={siteContent.map.ariaLabel}
+      className="trail-map-card journey-map-card presentation-panel rounded-lg p-4"
+      style={{ "--journey-map-bg": `url(${assets.journeyMap})` } as CSSProperties}
+    >
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-trail-gold">{siteContent.map.title}</p>

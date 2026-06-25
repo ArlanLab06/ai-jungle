@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { assets } from "@/data/assets";
 import { catMessages } from "@/data/catMessages";
 import { siteContent } from "@/data/siteContent";
 import { TechnoCat } from "./TechnoCat";
@@ -36,7 +37,11 @@ export function Hero({
 
   return (
     <section className="hero-scene relative flex min-h-screen items-center overflow-hidden px-5 py-14 sm:py-16 lg:py-14">
-      <div aria-hidden="true" className="hero-background absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="hero-background absolute inset-0"
+        style={{ backgroundImage: `url(${assets.hero})` }}
+      />
       <div aria-hidden="true" className="absolute inset-0 hero-vignette" />
       <motion.div
         animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
