@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { siteContent } from "@/data/siteContent";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Into the AI Jungle",
-  description: "An interactive journey about artificial intelligence as a friend or a threat.",
+  title: siteContent.metadata.title,
+  description: siteContent.metadata.description,
 };
 
 export default function RootLayout({

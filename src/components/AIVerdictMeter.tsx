@@ -1,29 +1,38 @@
 "use client";
 
-type AICompassProps = {
+import { siteContent } from "@/data/siteContent";
+
+type AIVerdictMeterProps = {
   friendScore: number;
   threatScore: number;
   responsibilityScore: number;
   variant?: "panel" | "final";
 };
 
-export function AICompass({
+export function AIVerdictMeter({
   friendScore,
   threatScore,
   responsibilityScore,
   variant = "panel",
-}: AICompassProps) {
-  const totalDecisionScore = friendScore + threatScore;
-  const markerPosition = totalDecisionScore === 0 ? 50 : (threatScore / totalDecisionScore) * 100;
+}: AIVerdictMeterProps) {
+  const displayFriendScore = toPercentScore(friendScore);
+  const displayThreatScore = toPercentScore(threatScore);
+  const displayResponsibilityScore = toPercentScore(responsibilityScore);
+  const totalDecisionScore = displayFriendScore + displayThreatScore;
+  const markerPosition = totalDecisionScore === 0 ? 50 : (displayThreatScore / totalDecisionScore) * 100;
   const leaning =
-    friendScore > threatScore ? "Friend path" : threatScore > friendScore ? "Threat path" : "Balanced path";
+    displayFriendScore > displayThreatScore
+      ? siteContent.meter.states.friend
+      : displayThreatScore > displayFriendScore
+        ? siteContent.meter.states.threat
+        : siteContent.meter.states.balanced;
 
   return (
     <aside className={`verdict-meter-card presentation-panel rounded-lg p-5 ${variant === "final" ? "verdict-meter-final" : ""}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-trail-gold">AI Verdict Meter</p>
-          <p className="mt-2 text-sm leading-6 text-stone-300">Every choice moves the verdict.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-trail-gold">{siteContent.meter.title}</p>
+          <p className="mt-2 text-sm leading-6 text-stone-300">{siteContent.meter.description}</p>
         </div>
         <span className="rounded-full border border-trail-gold/30 bg-trail-gold/10 px-3 py-1 text-xs font-bold text-trail-soft">
           {leaning}
@@ -31,9 +40,9 @@ export function AICompass({
       </div>
       <div className="mt-6">
         <div className="mb-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em]">
-          <span className="text-jungle-emerald">Friend</span>
-          <span className="text-stone-400">Center</span>
-          <span className="text-jungle-danger">Threat</span>
+          <span className="text-jungle-emerald">{siteContent.meter.axis.friend}</span>
+          <span className="text-stone-400">{siteContent.meter.axis.center}</span>
+          <span className="text-jungle-danger">{siteContent.meter.axis.threat}</span>
         </div>
         <div className="verdict-scale relative h-5 rounded-full">
           <span aria-hidden="true" className="absolute left-1/2 top-0 h-full w-px bg-trail-soft/55" />
@@ -44,30 +53,34 @@ export function AICompass({
           />
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-stone-500">
-          <span>Supports people</span>
-          <span>Needs human judgment</span>
-          <span>Creates risk</span>
+          <span>{siteContent.meter.captions.friend}</span>
+          <span>{siteContent.meter.captions.center}</span>
+          <span>{siteContent.meter.captions.threat}</span>
         </div>
       </div>
       <div className="mt-6">
         <div className="flex items-center justify-between gap-3 text-sm font-bold">
-          <p>Responsibility Level</p>
-          <p className="text-trail-soft">{responsibilityScore}</p>
+          <p>{siteContent.meter.responsibility}</p>
+          <p className="text-trail-soft">{displayResponsibilityScore}</p>
         </div>
         <div className="score-track mt-2 h-4 overflow-hidden rounded-full">
           <div
             className="h-full rounded-full bg-trail-gold transition-[width] duration-700 ease-out"
-            style={{ width: `${responsibilityScore}%` }}
+            style={{ width: `${displayResponsibilityScore}%` }}
           />
         </div>
       </div>
       <dl className="mt-6 grid grid-cols-3 gap-2">
-        <ScoreChip label="Friend" value={friendScore} tone="safe" />
-        <ScoreChip label="Threat" value={threatScore} tone="danger" />
-        <ScoreChip label="Responsibility" value={responsibilityScore} tone="gold" />
+        <ScoreChip label={siteContent.meter.chips.friend} value={displayFriendScore} tone="safe" />
+        <ScoreChip label={siteContent.meter.chips.threat} value={displayThreatScore} tone="danger" />
+        <ScoreChip label={siteContent.meter.chips.responsibility} value={displayResponsibilityScore} tone="gold" />
       </dl>
     </aside>
   );
+}
+
+function toPercentScore(value: number) {
+  return Math.min(100, Math.max(0, value));
 }
 
 function ScoreChip({

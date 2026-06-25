@@ -1,5 +1,6 @@
 "use client";
 
+import { siteContent } from "@/data/siteContent";
 import type { ChoiceKind } from "@/data/zones";
 
 type ChoiceCardProps = {
@@ -36,7 +37,7 @@ export function ChoiceCard({ kind, title, text, selected, onChoose }: ChoiceCard
             : "border-jungle-danger/30 bg-jungle-danger/12 text-jungle-danger"
         }`}
       >
-        {responsible ? "WISE" : "RISK"}
+        {responsible ? siteContent.choices.safeBadge : siteContent.choices.riskyBadge}
       </span>
       <span
         className={`relative block text-xs font-bold uppercase tracking-[0.18em] ${
@@ -46,7 +47,7 @@ export function ChoiceCard({ kind, title, text, selected, onChoose }: ChoiceCard
         {title}
       </span>
       <span className="relative mt-3 block text-lg font-bold text-trail-soft">
-        {responsible ? "Safe trail with human control" : "Risky shortcut without checks"}
+        {responsible ? siteContent.choices.safeSummary : siteContent.choices.riskySummary}
       </span>
       <span className="relative mt-3 block text-base leading-7 text-stone-100">{text}</span>
     </button>

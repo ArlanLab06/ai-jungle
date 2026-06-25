@@ -4,6 +4,7 @@ type CatMessage = (name: string) => string;
 type ZoneMessages = Record<ZoneId, Record<ChoiceKind, CatMessage>>;
 
 export const catMessages = {
+  heroPrompt: () => "I'm Byte, your guide. Enter your name, and I will open the trail.",
   intro: (name: string) =>
     `Welcome, ${name}. I'm Byte, your techno-cat guide.`,
   zoneIntro: {

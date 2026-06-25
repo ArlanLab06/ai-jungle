@@ -1,27 +1,43 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { assets } from "@/data/assets";
 
 type TechnoCatProps = {
   message: string;
   reduceMotion: boolean;
-  mode?: "fixed" | "inline" | "dock";
+  mode?: "fixed" | "inline" | "dock" | "final";
 };
 
 export function TechnoCat({ message, reduceMotion, mode = "fixed" }: TechnoCatProps) {
   const fixed = mode === "fixed";
   const docked = mode === "dock";
+  const final = mode === "final";
+  const modeClass = fixed ? "byte-fixed" : docked ? "byte-dock" : final ? "byte-final" : "byte-inline";
+  const imageSizes =
+    mode === "inline"
+      ? "(max-width: 640px) 120px, (max-width: 1024px) 180px, 280px"
+      : mode === "final"
+        ? "(max-width: 640px) 120px, (max-width: 1024px) 160px, 200px"
+        : "(max-width: 640px) 112px, (max-width: 1024px) 130px, 150px";
+  const [imageSrc, setImageSrc] = useState<string>(assets.byteCat);
+  const [showImage, setShowImage] = useState(true);
+
+  function handleImageError() {
+    if (imageSrc !== assets.byteCatFallback) {
+      setImageSrc(assets.byteCatFallback);
+      return;
+    }
+
+    setShowImage(false);
+  }
 
   return (
     <motion.aside
       animate={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: [0, -8, 0] }}
-      className={`z-50 flex max-w-[min(94vw,520px)] items-end gap-3 ${docked ? "byte-dock" : ""} ${
-        fixed
-          ? "fixed bottom-5 left-3 sm:bottom-8 sm:left-6 lg:bottom-10 lg:left-auto lg:right-[360px]"
-          : docked
-            ? "relative flex-col-reverse items-center"
-            : "relative"
-      }`}
+      className={`byte-guide z-50 ${modeClass}`}
       initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       transition={
         reduceMotion
@@ -40,9 +56,7 @@ export function TechnoCat({ message, reduceMotion, mode = "fixed" }: TechnoCatPr
         >
           <span
             aria-hidden="true"
-            className={`byte-bubble-arrow absolute -right-2 bottom-7 h-4 w-4 rotate-45 border-r border-t border-[var(--border-soft)] bg-[rgba(8,14,10,0.84)] ${
-              docked ? "hidden" : ""
-            }`}
+            className="byte-bubble-arrow absolute h-4 w-4 rotate-45 border-r border-t border-[var(--border-soft)] bg-[rgba(8,14,10,0.84)]"
           />
           <p className="font-bold text-trail-gold">Byte</p>
           <p>{message}</p>
@@ -50,17 +64,21 @@ export function TechnoCat({ message, reduceMotion, mode = "fixed" }: TechnoCatPr
       </AnimatePresence>
       <div aria-label="Byte, the floating techno-cat guide" className="byte-shell" role="img">
         <div className="byte-aura" />
-        <div className="byte-tail" />
-        <div className="byte-ear byte-ear-left" />
-        <div className="byte-ear byte-ear-right" />
-        <div className="byte-head" />
-        <div className="byte-eye byte-eye-left" />
-        <div className="byte-eye byte-eye-right" />
-        <div className="byte-nose" />
-        <div className="byte-body" />
-        <div className="byte-circuit" />
-        <div className="byte-paw byte-paw-left" />
-        <div className="byte-paw byte-paw-right" />
+        {showImage ? (
+          <Image
+            alt=""
+            aria-hidden="true"
+            className="byte-cat-image"
+            draggable={false}
+            height={220}
+            onError={handleImageError}
+            sizes={imageSizes}
+            src={imageSrc}
+            width={220}
+          />
+        ) : (
+          <span aria-hidden="true" className="byte-cat-fallback" />
+        )}
       </div>
     </motion.aside>
   );

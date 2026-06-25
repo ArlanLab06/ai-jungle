@@ -16,6 +16,8 @@ export const initialScoreState: ScoreState = {
   choices: {},
 };
 
+const SCORE_PER_ZONE = 25;
+
 export function clampScore(value: number) {
   return Math.min(100, Math.max(0, value));
 }
@@ -27,17 +29,17 @@ export function calculateScores(
     (scores, choice) => {
       if (choice === "responsible") {
         return {
-          friendScore: scores.friendScore + 20,
+          friendScore: clampScore(scores.friendScore + SCORE_PER_ZONE),
           threatScore: scores.threatScore,
-          responsibilityScore: clampScore(scores.responsibilityScore + 20),
+          responsibilityScore: clampScore(scores.responsibilityScore + SCORE_PER_ZONE),
         };
       }
 
       if (choice === "dangerous") {
         return {
           friendScore: scores.friendScore,
-          threatScore: scores.threatScore + 20,
-          responsibilityScore: clampScore(scores.responsibilityScore - 5),
+          threatScore: clampScore(scores.threatScore + SCORE_PER_ZONE),
+          responsibilityScore: scores.responsibilityScore,
         };
       }
 
@@ -62,23 +64,3 @@ export function getVerdict(friendScore: number, threatScore: number): VerdictKin
 
   return "both";
 }
-
-export function getVerdictTitle(verdict: VerdictKind) {
-  if (verdict === "friend") {
-    return "AI is a friend";
-  }
-
-  if (verdict === "threat") {
-    return "AI is a threat";
-  }
-
-  return "AI is both";
-}
-
-export const jungleLaws = [
-  "Use AI as a tool, not as a replacement for thinking.",
-  "Check information before you trust it.",
-  "Protect personal data.",
-  "Keep humans in control of serious decisions.",
-  "Use AI with honesty and responsibility.",
-];
